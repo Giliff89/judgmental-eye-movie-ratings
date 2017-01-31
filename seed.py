@@ -51,6 +51,9 @@ def load_movies():
         # clean_row.append(row[4])
         # take out genre info and remove empty string where a double pipe occurs
 
+        # TRY TOMORROW! put all variables in a line, separated by commas,
+        # assign to row indecies. Split title on the paren ('(') and take index[0]
+
         movie_id = clean_row[0]
         imdb_url = clean_row[4]
 
