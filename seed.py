@@ -46,25 +46,12 @@ def load_movies():
 
     # Read u.item file and insert data
     for row in open("seed_data/u.item"):
-        row = row.rstrip().split("|")
-        clean_row = row[0:5]
-        # clean_row.append(row[4])
-        # take out genre info and remove empty string where a double pipe occurs
+        movie_id, title, released_at, _, imdb_url = row.rstrip().split("|")[:5]
 
-        # TRY TOMORROW! put all variables in a line, separated by commas,
-        # assign to row indecies. Split title on the paren ('(') and take index[0]
+        # taking year off end of title
+        title = title[:-7]
 
-        movie_id = clean_row[0]
-        imdb_url = clean_row[4]
-
-        title = clean_row[1]
-        # clean_title = title.split(" ").pop()
-        # title = clean_title.join(" ")
-
-        released_str = clean_row[2]
-        if released_str:
-            released_at = datetime.datetime.strptime(released_str, "%d-%b-%Y")
-        else:
+        if released_at == "":
             released_at = None
 
         movie = Movie(movie_id=movie_id,
