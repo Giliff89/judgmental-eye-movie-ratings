@@ -1,10 +1,11 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import User
+from model import User, Movie  # , Rating
 # from model import Rating
 # from model import Movie
 
+import datetime
 from model import connect_to_db, db
 from server import app
 
@@ -37,6 +38,42 @@ def load_users():
 def load_movies():
     """Load movies from u.item into database."""
 
+    print "Movies"
+
+    # Delete all rows in table, so if we need to run this a second time,
+    # we won't be trying to add duplicate movies
+    Movie.query.delete()
+
+    # Read u.item file and insert data
+    for row in open("seed_data/u.item"):
+        row = row.rstrip().split("|")
+        clean_row = row[0:5]
+        # clean_row.append(row[4])
+        # take out genre info and remove empty string where a double pipe occurs
+
+        movie_id = clean_row[0]
+        imdb_url = clean_row[4]
+
+        title = clean_row[1]
+        # clean_title = title.split(" ").pop()
+        # title = clean_title.join(" ")
+
+        released_str = clean_row[2]
+        if released_str:
+            released_at = datetime.datetime.strptime(released_str, "%d-%b-%Y")
+        else:
+            released_at = None
+
+        movie = Movie(movie_id=movie_id,
+                      title=title,
+                      released_at=released_at,
+                      imdb_url=imdb_url)
+
+        # We need to add to the session or it won't ever be stored
+        db.session.add(movie)
+
+    # Once we're done, we should commit our work
+    db.session.commit()
 
 def load_ratings():
     """Load ratings from u.data into database."""
@@ -64,5 +101,5 @@ if __name__ == "__main__":
     # Import different types of data
     load_users()
     load_movies()
-    load_ratings()
-    set_val_user_id()
+    # load_ratings()
+    # set_val_user_id()
