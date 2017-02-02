@@ -28,34 +28,6 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
-    # def add_new_user(self, email, password):
-    #     # def add_new_user(self):
-    #     """Takes user input from registration form and adds to users table"""
-
-    #     QUERY = """
-    #             INSERT INTO users (email, password)
-    #             VALUES (:email, :password)
-    #     """
-
-    #     # new_user = User(email=username, password=password)
-
-    #     # db.session.add(self)
-    #     # db.session.add(self.email, self.password)
-    #     db.session.execute(QUERY, {'email': email, 'password': password)
-    #     db.session.commit()
-
-
-def add_new_user(email, password):
-    """Takes user input from registration form and adds to users table"""
-
-    QUERY = """
-    INSERT INTO users (email, password)
-    VALUES (:email, :password)
-    """
-
-    db.session.execute(QUERY, {'email': email, 'password': password})
-    db.session.commit()
-
 
 class Movie(db.Model):
     """Movies for rating on the website."""
@@ -111,6 +83,31 @@ def connect_to_db(app):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
     db.app = app
     db.init_app(app)
+
+
+def add_new_user(email, password):
+    """Takes user input from registration form and adds to users table"""
+
+    QUERY = """
+    INSERT INTO users (email, password)
+    VALUES (:email, :password)
+    """
+
+    db.session.execute(QUERY, {'email': email, 'password': password})
+    db.session.commit()
+
+
+def check_user(email, password):
+    """Comparing email and password in database to user entry."""
+
+    QUERY = """
+    SELECT user_id
+    FROM users
+    WHERE(email = :email AND password = :password)
+    """
+
+    db.session.execute(QUERY, {'email': email, 'password': password})
+    db.session.commit()
 
 
 if __name__ == "__main__":

@@ -103,14 +103,6 @@ def set_val_user_id():
     db.session.commit()
 
 
-# def add_new_user(username, password):
-#     """Takes user input from registration form and adds to users table"""
-
-#     new_user = User(email=username, password=password)
-
-#     db.session.add(new_user)
-#     db.session.commit()
-
 if __name__ == "__main__":
     connect_to_db(app)
 

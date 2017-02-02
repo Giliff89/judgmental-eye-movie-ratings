@@ -6,13 +6,13 @@ from flask import (Flask, render_template, redirect, request, flash,
                    session)
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import User, Rating, Movie, connect_to_db, db, add_new_user
+from model import User, Rating, Movie, connect_to_db, db, add_new_user, check_user
 
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = "dfiagiellkbeaio54869yjnhrgit4"
 
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
@@ -49,11 +49,20 @@ def register_process():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    # new_user = User(email=email, password=password)
-
     add_new_user(email, password)
 
     return redirect("/")
+
+
+@app.route('/login', methods=["GET"])
+def auth_user():
+    """Checks if username matches password in database. """
+
+    email = request.args.get('email')
+    password = request.args.get('password')
+
+    return render_template("login.html", )
+
 
 
 if __name__ == "__main__":
