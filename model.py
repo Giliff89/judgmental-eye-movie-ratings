@@ -23,10 +23,38 @@ class User(db.Model):
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String(64), unique = True, nullable=True)
+    email = db.Column(db.String(64), unique=True, nullable=True)
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
+
+    # def add_new_user(self, email, password):
+    #     # def add_new_user(self):
+    #     """Takes user input from registration form and adds to users table"""
+
+    #     QUERY = """
+    #             INSERT INTO users (email, password)
+    #             VALUES (:email, :password)
+    #     """
+
+    #     # new_user = User(email=username, password=password)
+
+    #     # db.session.add(self)
+    #     # db.session.add(self.email, self.password)
+    #     db.session.execute(QUERY, {'email': email, 'password': password)
+    #     db.session.commit()
+
+
+def add_new_user(email, password):
+    """Takes user input from registration form and adds to users table"""
+
+    QUERY = """
+    INSERT INTO users (email, password)
+    VALUES (:email, :password)
+    """
+
+    db.session.execute(QUERY, {'email': email, 'password': password})
+    db.session.commit()
 
 
 class Movie(db.Model):

@@ -6,7 +6,7 @@ from flask import (Flask, render_template, redirect, request, flash,
                    session)
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import User, Rating, Movie, connect_to_db, db
+from model import User, Rating, Movie, connect_to_db, db, add_new_user
 
 
 app = Flask(__name__)
@@ -46,6 +46,13 @@ def register_form():
 def register_process():
     """Redirects user to homepage if username is not taken."""
 
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    # new_user = User(email=email, password=password)
+
+    add_new_user(email, password)
+
     return redirect("/")
 
 
@@ -60,6 +67,4 @@ if __name__ == "__main__":
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
-
-    
     app.run(port=5000, host='0.0.0.0')
