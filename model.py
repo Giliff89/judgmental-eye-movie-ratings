@@ -100,14 +100,32 @@ def add_new_user(email, password):
 def check_user(email, password):
     """Comparing email and password in database to user entry."""
 
+    auth = User.query.filter_by(email=email, password=password)
+
+    # return auth.one()
+
+    if auth.one():
+        # raise Exception("Error")
+        return auth.one().user_id
+    else:
+        return False
+
+
+def check_email(email):
+    """Comparing email in database to user entry."""
+
     QUERY = """
-    SELECT user_id
+    SELECT email
     FROM users
-    WHERE(email = :email AND password = :password)
+    WHERE(email = :email)
     """
 
-    db.session.execute(QUERY, {'email': email, 'password': password})
-    db.session.commit()
+    in_db = db.session.execute(QUERY, {'email': email})
+    
+    if in_db.fetchone():
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from flask import (Flask, render_template, redirect, request, flash,
                    session)
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import User, Rating, Movie, connect_to_db, db, add_new_user, check_user
+from model import User, Rating, Movie, connect_to_db, db, add_new_user, check_email, check_user
 
 
 app = Flask(__name__)
@@ -49,21 +49,37 @@ def register_process():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    add_new_user(email, password)
 
-    return redirect("/")
+    email_confirm = check_email(email)
+
+    if email_confirm == False:
+        add_new_user(email, password)
+        return redirect("/")
+    else:
+        return redirect("/login")
 
 
-@app.route('/login', methods=["GET"])
+@app.route('/login', methods=["GET", "POST"])
 def auth_user():
     """Checks if username matches password in database. """
 
-    email = request.args.get('email')
-    password = request.args.get('password')
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-    return render_template("login.html", )
+        if check_email(email) is True:
+            authenticate = check_user(email, password)
 
-
+            if authenticate:
+                session['user'] = authenticate
+                flash('Log in successful')
+                return redirect("/")
+            else:
+                flash('That was the wrong password, try again.')
+        else:
+            return redirect("/register")
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
